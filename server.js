@@ -1,70 +1,3 @@
-// const express = require('express');
-// const cors = require('cors');
-// const bodyParser = require('body-parser');
-// const admin = require('firebase-admin');
-
-// const serviceAccount = require('./serviceAccountKey.json'); // Update path to your service account key
-// console.log(serviceAccount);
-
-// admin.initializeApp({
-//   credential: admin.credential.cert(serviceAccount)
-// });
-// const db = admin.firestore();
-
-// const app = express();
-// app.use(cors());
-// app.use(bodyParser.json());
-
-// // API endpoint to add a new user
-// app.post('/api/users', async (req, res) => {
-//   try {
-//     const { username, email, role } = req.body;
-//     const createdDate = admin.firestore.FieldValue.serverTimestamp();
-
-//     const docRef = await db.collection('users').add({
-//       username,
-//       email,
-//       role,
-//       createdDate
-//     });
-   
-//     res.json({ id: docRef.id, message: 'User added successfully' });
-//   } catch (error) {
-//     console.error('Error adding user:', error);
-//     res.status(500).json({ error: 'Internal server error' });
-//   }
-// });
-
-// // API endpoint to get all users
-// app.get('/api/users', async (req, res) => {
-//   try {
-//     const snapshot = await db.collection('users').get();
-//     const users = [];
-//     snapshot.forEach(doc => {
-//       users.push({ id: doc.id, ...doc.data() });
-//     });
-//     res.json(users);
-//   } catch (error) {
-//     console.error('Error getting users:', error);
-//     res.status(500).json({ error: 'Internal server error' });
-//   }
-// });
-
-// // Delete User
-// function deleteUser(userId){
-//     console.log("delete me.");
-// }
-
-// app.use(express.static("public"));
-// const PORT = process.env.PORT || 3000;
-// console.log(PORT);
-// app.listen(PORT, () => {
-//   console.log(`Server is running on port ${PORT}`);
-// });
-
-
-
-
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -80,22 +13,9 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-let userCount = 0;
-
-function generateUserId(num, len) {
-  let str = ''+ num;
-  while(str.length < len){
-    str = '0' + str;
-  }
-  return str;
-}
-
 // Add a new user
 app.post('/api/users', (req, res) => {
   const { username, email, role } = req.body;
-
-  const userSnapshot = db.collection('users').get();
-  userCount = userSnapshot.size;
 
   db.collection('users').where(username, '==', username).get()
   .then((querySnapshot) =>{
@@ -114,10 +34,13 @@ app.post('/api/users', (req, res) => {
         else{
           console.log("it's unique");
           // generate user id
-          const userId = generateUserId(userCount +1, 4);
+          const id = Math.floor(1000 + Math.random()* 9000);
+          console.log(id);
+          const user_id = id.toString();
+          console.log(user_id);
 
-          db.collection('users').doc(userId).set({
-            id: userId,
+          db.collection('users').doc(user_id).set({
+            id: id,
             username,
             email,
             role,
@@ -136,19 +59,6 @@ app.post('/api/users', (req, res) => {
   .catch((error) => {
     console.log("error checking username/email:", error);
   });
-
-  // db.collection('users').add({
-  //   username,
-  //   email,
-  //   role,
-  //   createdDate: admin.firestore.Timestamp.now(),
-  //   updatedDate: null
-  // })
-  // .then(() => res.sendStatus(200))
-  // .catch(error => {
-  //   console.error('Error adding user:', error);
-  //   res.sendStatus(500);
-  // });
 });
 
 // Update an existing user

@@ -15,135 +15,6 @@ const firebaseConfig = {
   // Get a reference to the Firestore service
   const db = firebase.firestore();
   
-//   // Form submission
-//   const form = document.getElementById('userForm');
-//   form.addEventListener('submit', (e) => {
-//     e.preventDefault();
-  
-//     // Get form values
-//     const username = form.username.value;
-//     const email = form.email.value;
-//     const role = form.role.value;
-//     const createdDate = new Date().toString();
-
-//     // Generate unique id
-//     // const id = db.collection("users").doc().id;
-//     const id = Math.floor(1000 + Math.random()* 9000);
-  
-//     // Save data to Firestore
-//     db.collection("users").doc(String(id)).set({
-//         id: id,
-//         username: username,
-//         email: email,
-//         role: role,
-//         createdDate: createdDate
-//       })
-//     // db.collection("users").add({
-//     //   username: username,
-//     //   email: email,
-//     //   role: role,
-//     //   createdDate: createdDate
-//     // })
-//     .then(() => {
-//       console.log("Document written with ID: ");
-//       // Reset form after submission
-//       form.reset();
-//       alert("Data saved successfully!");
-//     })
-//     .catch((error) => {
-//       console.error("Error adding document: ", error);
-//       alert("An error occurred. Please try again.");
-//     });
-//   });
-
-
-// // Retrieve data from firestore and display in table
-// const userTableBody = document.getElementById('userTableBody');
-// console.log(userTableBody);
-
-// db.collection('users').orderBy('createdDate', 'desc').get().then((querySnapshot) => {
-//     querySnapshot.forEach(doc => {
-//         const userData = doc.data();
-//         const createdDate = new Date(userData.createdDate.toDate());
-//         const row = '<tr><td>${doc.id}</td><td>${userData.username}</td><td>${userData.email}</td><td>${userData.role}</td><td>${createdDate.toLocaleString()}</td></tr>';
-//         userTableBody.innerHTML += row;
-//     });
-// });
-
-
-
-
-// document.getElementById('userForm').addEventListener('submit', async function(event) {
-//     event.preventDefault();
-  
-//     const username = document.getElementById('username').value;
-//     const email = document.getElementById('email').value;
-//     const role = document.getElementById('role').value;
-  
-//     try {
-//       const response = await fetch('http://localhost:3000/api/users', {
-//         method: 'POST',
-//         headers: {
-//           'Content-Type': 'application/json'
-//         },
-//         body: JSON.stringify({ username, email, role })
-//       });
-//       const data = await response.json();
-//       alert(data.message);
-//       getUsers();
-//     } catch (error) {
-//       console.error('Error adding user:', error);
-//       alert('Error submitting data!');
-//     }
-//   });
-  
-//   async function getUsers() {
-//     try {
-//       const response = await fetch('http://localhost:3000/api/users');
-//       const users = await response.json();
-//       const userTableBody = document.getElementById('userTableBody');
-//       userTableBody.innerHTML = '';
-  
-//       users.forEach(user => {
-//         const createdDate = new Date(user.createdDate.seconds * 1000);
-//         const row = `
-//           <tr>
-//             <td>${user.id}</td>
-//             <td>${user.username}</td>
-//             <td>${user.email}</td>
-//             <td>${user.role}</td>
-//             <td>${createdDate.toLocaleString()}</td>
-//             <td>${createdDate.toLocaleString()}</td>
-//             <td>
-//               <button onclick="editUser('${user.id}')">Edit</button>
-//               <button onclick="deleteUser('${user.id}')">Delete</button>
-//             </td>
-//           </tr>
-//         `;
-//         userTableBody.innerHTML += row;
-//       });
-//     } catch (error) {
-//       console.error('Error getting user list:', error);
-//     }
-//   }
-
-//   // Delete User
-// function deleteUser(userId){
-//   console.log("delete me.");
-// }
-  
-//   // Initial call to populate user list
-//   getUsers();
-
-
-
-
-
-
-
-
-
-
 // Fetch user data from server and display in table
 function fetchUsers() {
   fetch('http://localhost:3000/api/users')
@@ -152,8 +23,10 @@ function fetchUsers() {
       const userTableBody = document.getElementById('userTableBody');
       userTableBody.innerHTML = '';
       users.forEach(user => {
-        const createdDate = new Date(user.createdDate.seconds * 1000).toLocaleString();
-        const updatedDate = user.updatedDate ? new Date(user.updatedDate.seconds * 1000).toLocaleString() : '';
+        console.log(new Date(user.createdDate._seconds * 1000).toLocaleDateString());
+        const createdDate = new Date(user.createdDate._seconds * 1000).toLocaleDateString();
+        // const createdDate = user.createdDate;
+        const updatedDate = user.updatedDate ? new Date(user.updatedDate._seconds * 1000).toLocaleDateString() : '';
         const row = `
           <tr>
             <td>${user.id}</td>
@@ -213,47 +86,12 @@ document.getElementById('userForm').addEventListener('submit', function(event) {
     })
     .catch(error => console.error('Error adding user:', error));
 
-    //  // Add user to Firestore
-    //  db.collection('users').add({
-    //    username,
-    //    email,
-    //    role,
-    //    createdDate: new Date(),
-    //    updatedDate: null
-    //  })
-    //  .then(() => {
-    //    console.log("User added successfully");
-    //    getUserList();
-    //    document.getElementById('userForm').reset(); // Reset form fields
-    //  })
-    //  .catch(error => {
-    //    console.error('Error adding user:', error);
-    //  });
    })
    .catch(error => {
      console.error('Error:', error);
      alert('Username or email is not unique. Please try again with different credentials.');
    });
 });
-
-//   const role = document.getElementById('role').value;
-//   fetch('http://localhost:3000/api/users', {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json'
-//     },
-//     body: JSON.stringify({ username, email, role })
-//   })
-//   .then(response => {
-//     if (response.ok) {
-//       document.getElementById('userForm').reset();
-//       fetchUsers();
-//     } else {
-//       throw new Error('Failed to add user');
-//     }
-//   })
-//   .catch(error => console.error('Error adding user:', error));
-// });
 
 // Edit user
 function editUser(id, username, email, role) {

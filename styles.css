@@ -6,16 +6,48 @@ body {
   }
   
   .container {
+
     max-width: 900px;
     margin: 0 auto;
+    margin-top: 0.5%;
     padding: 20px;
     background-color: #fff;
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .col-6{
+    display: flex;
+    flex: 1;
+    width: 100%;
+    flex-direction: column;
+    margin: auto 2%;
+  }
+
+  .userForm-container, .searchForm-container{
+    width: 100%;
   }
   
   .form-group {
     margin-bottom: 20px;
+  }
+
+  .btn-form-group{
+    display: flex;
+    align-items: center;
+  }
+
+  input[type="radio"]{
+    margin: 0 auto;
+    margin-right: 4%;
+  }
+
+  .radio-container {
+    display: flex;
+    margin-right: 2%;
   }
   
   label {
@@ -44,6 +76,11 @@ body {
   
   button:hover {
     background-color: #0056b3;
+  }
+
+  .userList{
+    flex-direction: column;
+    margin-top: 1%;
   }
 table{
     width: 100%;

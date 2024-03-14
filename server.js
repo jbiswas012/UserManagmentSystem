@@ -105,6 +105,25 @@ app.get('/api/users', (req, res) => {
     });
 });
 
+// API endpoint to search a user by username
+app.get('/api/users/search', (req, res) => {
+  const { username } = req.query;
+
+  db.collection('users').where('username', '==', username).get()
+    .then(snapshot => {
+      console.log("snapshot");
+      let user;
+      snapshot.forEach(doc => {
+        user = doc.data();
+      });
+      res.json(user);
+    })
+    .catch(error => {
+      console.error('Error searching user:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    });
+});
+
 // API endpoint to search a user by ID
 app.get('/api/users/:id', (req, res) => {
   const userId = req.params.id;
@@ -112,31 +131,13 @@ app.get('/api/users/:id', (req, res) => {
   db.collection('users').doc(userId).get()
     .then(doc => {
       if (!doc.exists) {
-        res.status(404).json({ error: 'User not found' });
+        res.status(404).json({ error: 'Userssssssss not found' });
       } else {
         res.json({ id: doc.id, ...doc.data() });
       }
     })
     .catch(error => {
       console.error('Error getting user:', error);
-      res.status(500).json({ error: 'Internal server error' });
-    });
-});
-
-// API endpoint to search a user by username
-app.get('/api/users/search', (req, res) => {
-  const { username } = req.query;
-
-  db.collection('users').where('username', '==', username).get()
-    .then(snapshot => {
-      const users = [];
-      snapshot.forEach(doc => {
-        users.push({ id: doc.id, ...doc.data() });
-      });
-      res.json(users);
-    })
-    .catch(error => {
-      console.error('Error searching user:', error);
       res.status(500).json({ error: 'Internal server error' });
     });
 });

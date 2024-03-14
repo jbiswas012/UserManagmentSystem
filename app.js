@@ -152,7 +152,7 @@ document.getElementById('searchForm').addEventListener('submit', function(event)
   fetch(searchEndpoint)
     .then(response => response.json())
     .then(data => {
-      // console.log(data);
+      console.log(data);
       const userTableBody = document.getElementById('userTableBody');
       userTableBody.innerHTML = '';
         const createdDate = new Date(data.createdDate._seconds * 1000).toLocaleDateString();
@@ -172,6 +172,7 @@ document.getElementById('searchForm').addEventListener('submit', function(event)
           </tr>
         `;
         userTableBody.innerHTML += row;
+        document.getElementById('searchForm').reset();
     })
     .catch(error => {
       console.error('Error searching user:', error);

@@ -143,22 +143,40 @@ document.getElementById('searchForm').addEventListener('submit', function(event)
 
   let searchEndpoint;
   if (searchType === 'id') {
-    searchEndpoint = `/api/users/${searchInput}`;
+    searchEndpoint = `http://localhost:3000/api/users/${searchInput}`;
   } else {
-    searchEndpoint = `/api/users/search?username=${searchInput}`;
+    searchEndpoint = `http://localhost:3000/api/users/search?username=${searchInput}`;
   }
 
   // Call backend API to search for user by ID or username
   fetch(searchEndpoint)
     .then(response => response.json())
     .then(data => {
-      displayUserList(Array.isArray(data) ? data : [data]);
+      // console.log(data);
+      const userTableBody = document.getElementById('userTableBody');
+      userTableBody.innerHTML = '';
+        const createdDate = new Date(data.createdDate._seconds * 1000).toLocaleDateString();
+        const updatedDate = data.updatedDate ? new Date(data.updatedDate._seconds * 1000).toLocaleDateString() : '';
+        const row = `
+          <tr>
+            <td>${data.id}</td>
+            <td>${data.username}</td>
+            <td>${data.email}</td>
+            <td>${data.role}</td>
+            <td>${createdDate}</td>
+            <td>${updatedDate}</td>
+            <td>
+              <button onclick="editUser('${data.id}', '${data.username}', '${data.email}', '${data.role}')">Edit</button>
+              <button onclick="deleteUser('${data.id}')">Delete</button>
+            </td>
+          </tr>
+        `;
+        userTableBody.innerHTML += row;
     })
     .catch(error => {
       console.error('Error searching user:', error);
     });
 });
-
 
 // Fetch users on page load
 fetchUsers();
